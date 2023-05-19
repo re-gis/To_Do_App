@@ -54,7 +54,7 @@ const List = ({ input }) => {
         <div>
           <h6>ToDo List</h6>
         </div>
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div className="flex gap-2 flex-col md:flex-row ">
           <button
             style={{
               width: "100px",
@@ -99,7 +99,8 @@ const List = ({ input }) => {
           </button>
         </div>
         <div
-          style={{ border: "1px solid #ccc", padding: "10px", width: "80%" }}
+          style={{ border: "1px solid #ccc", padding: "10px" }}
+          className="w-auto md:w-72"
         >
           <ol
             style={{
@@ -126,13 +127,7 @@ const List = ({ input }) => {
                   key={todo.data}
                 >
                   <li style={{ padding: "2px" }}>{todo.data}</li>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "2px",
-                    }}
-                  >
+                  <div className="flex items-center md:gap-2">
                     <input
                       style={{ width: "13px" }}
                       type="checkbox"
@@ -148,6 +143,7 @@ const List = ({ input }) => {
                         });
                         setTodos(updatedTodos);
                       }}
+                      className="ml-9 md:ml-0"
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -157,6 +153,7 @@ const List = ({ input }) => {
                       stroke="blue"
                       style={{ width: "13px", cursor: "pointer" }}
                       onClick={() => handleUpdate(todo.id)}
+                      className="hidden md:flex"
                     >
                       <path
                         strokeLinecap="round"
@@ -172,6 +169,7 @@ const List = ({ input }) => {
                       stroke="white"
                       style={{ width: "13px", cursor: "pointer" }}
                       onClick={() => handleRemove(todo.id)}
+                      className="hidden md:flex"
                     >
                       <path
                         strokeLinecap="round"
@@ -229,7 +227,7 @@ const List = ({ input }) => {
         </div>
         {/* Rest of the component code */}
         {/* ... */}
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div className="flex gap-2 flex-col md:flex-row">
           <button
             style={{
               width: "100px",

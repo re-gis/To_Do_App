@@ -35,6 +35,9 @@ const ToDo = () => {
           borderBottom: "1px solid #ccc",
         }}
       >
+        <div className="text-center underline text-blue-400">
+          <h1>ToDo App</h1>
+        </div>
         <div
           style={{
             height: "100%",
