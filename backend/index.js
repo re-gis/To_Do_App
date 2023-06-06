@@ -1,7 +1,7 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const connectDB = require("./config/db");
-const router = require("./routes/todo.routes");
+const router = require("./routes/todo.routes.js");
 require("dotenv").config();
 const app = express();
 const cors = require("cors");
@@ -14,16 +14,16 @@ app.use(
   })
 );
 
-
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 
 // DATABASE
-connectDB()
+connectDB();
 
 // ROUTES
-app.use('/api/todo', router);
+app.use("/api/todo", router);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
