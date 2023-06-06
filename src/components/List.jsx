@@ -1,42 +1,32 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const List = ({ input }) => {
   const [todos, setTodos] = useState([]);
   const [update, setUpdate] = useState(false);
   const [up, setUp] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleRemove = (id) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-  };
-
-  const handleRemoveAll = () => {
-    setTodos([]);
-  };
-
-  const deleteCompleted = () => {
-    const updatedTodos = todos.filter((todo) => todo.completed);
-    setTodos(updatedTodos);
-  };
-
-  const handleUpdate = (id) => {
-    setUpdate(!update);
-    // console.log(id);
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        setUp(todo.data);
-      }
-      return todo;
-    });
-    setTodos(updatedTodos);
+  const getTodos = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get("/api/todo");
+      setTodos(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    if (input === "") {
-      return;
-    }
-    setTodos([...todos, { data: input, id: Math.random(), completed: true }]);
-  }, [input]);
+    getTodos();
+  }, [input, update, up]);
+
+
+  const handleRemove = () => {}
+  const handleRemoveAll = () => {}
+  const handleUpdate = () => {}
+ 
 
   return (
     <>
@@ -114,7 +104,7 @@ const List = ({ input }) => {
                 <span>No todos found!</span>
               </div>
             ) : (
-              todos.map((todo) => (
+              input.map((todo) => (
                 <div
                   style={{
                     borderBottom: "1px solid #ccc",
@@ -124,9 +114,10 @@ const List = ({ input }) => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
-                  key={todo.data}
+                  key={todo._id}
                 >
-                  <li style={{ padding: "2px" }}>{todo.data}</li>
+                  {/* {console.log(todo)} */}
+                  <li style={{ padding: "2px" }}>{todo.description}</li>
                   <div className="flex items-center md:gap-2">
                     <input
                       style={{ width: "13px" }}
@@ -136,7 +127,7 @@ const List = ({ input }) => {
                       value={todo.completed}
                       onChange={() => {
                         const updatedTodos = todos.map((t) => {
-                          if (t.id === todo.id) {
+                          if (t._id === todo._id) {
                             return { ...t, completed: !t.completed };
                           }
                           return t;
@@ -152,7 +143,7 @@ const List = ({ input }) => {
                       strokeWidth="1.5"
                       stroke="blue"
                       style={{ width: "13px", cursor: "pointer" }}
-                      onClick={() => handleUpdate(todo.id)}
+                      onClick={() => handleUpdate(todo._id)}
                       className="hidden md:flex"
                     >
                       <path
@@ -168,7 +159,7 @@ const List = ({ input }) => {
                       strokeWidth="1.5"
                       stroke="white"
                       style={{ width: "13px", cursor: "pointer" }}
-                      onClick={() => handleRemove(todo.id)}
+                      onClick={() => handleRemove(todo._id)}
                       className="hidden md:flex"
                     >
                       <path

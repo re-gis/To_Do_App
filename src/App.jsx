@@ -2,6 +2,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ToDo from "./components/ToDo";
 import Update from "./components/Update";
+import axios from "axios";
+
+
+
+axios.defaults.baseURL = "http://127.0.0.1:3000";
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

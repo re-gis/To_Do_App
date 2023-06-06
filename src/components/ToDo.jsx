@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import List from "./List";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const ToDo = () => {
   const [input, setInput] = useState("");
   const [err, setErr] = useState("");
-  const [data, setData] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [res, setRes] = useState([])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (input === "") {
       setErr("Please enter a todo!");
     } else {
-      setErr("");
-      setData(input);
-      setInput("");
+      try {
+        setLoading(true);
+        const {data} = await axios.post("/api/todo", { title: "Todo"+ Date.now(), description: input });
+        setRes([...res, data])
+        setInput('')
+      } catch (error) {
+        console.log(error)
+        toast({ type: "error", message: error.message});
+      }
     }
   };
   return (
@@ -35,7 +44,7 @@ const ToDo = () => {
           borderBottom: "1px solid #ccc",
         }}
       >
-        <div className="text-center underline text-blue-400">
+        <div className="text-center underline text-blue-400 text-lg">
           <h1>ToDo App</h1>
         </div>
         <div
@@ -101,7 +110,7 @@ const ToDo = () => {
         </div>
       </div>
       <div style={{ backgroundColor: "#c0c0c0", height: "70%", width: "50%" }}>
-        <List input={data} />
+        <List input={res} />
       </div>
     </div>
   );
