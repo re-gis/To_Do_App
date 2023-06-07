@@ -1,44 +1,122 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const List = ({ input }) => {
   const [todos, setTodos] = useState([]);
   const [update, setUpdate] = useState(false);
   const [up, setUp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState([]);
+  const [complete, setComplete] = useState(true);
+  const [td, setTd] = useState()
 
   const getTodos = async () => {
     try {
-      setLoading(true);
       const { data } = await axios.get("/api/todo");
-      setTodos(data);
-      setLoading(false);
+      if (data.length === 0) return;
+      setResult([data]);
     } catch (error) {
       console.log(error);
+      toast.error("No todo found!");
     }
   };
 
   useEffect(() => {
     getTodos();
-  }, [input, update, up]);
+  }, [input]);
+
+  const handleRemove = async (todo) => {
+    try {
+      await axios.delete(`/api/todo/${todo}`);
+      const { data } = await axios.get("/api/todo");
+      if (data.length === 0) {
+        console.log("No todo");
+      } else {
+        setResult([data]);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred!");
+    }
+  };
+  const handleRemoveAll = async () => {
+    try {
+      await axios.delete("/api/todo");
+      const { data } = await axios.get("/api/todo");
+      if (data.length === 0) {
+        console.log("No todo");
+      } else {
+        setResult([data]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleUpdate = (todo) => {
+    setTd(todo)
+    setUpdate(!update);
+  };
 
 
-  const handleRemove = () => {}
-  const handleRemoveAll = () => {}
-  const handleUpdate = () => {}
- 
+  const handleUpdateSub = async(todo) => {
+    try {
+      await axios.put(`/api/todo/${todo}`, {
+        desc: up
+      })     
+      const { data } = await axios.get("/api/todo");
+      if (data.length === 0) {
+        console.log("No todo");
+      } else {
+        setResult([data]);
+      }
+      
+      setUpdate(false)
+      setUp('')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleComplete = async (todo) => {
+    try {
+      const { data } = await axios.put(`/api/todo/${todo}/complete`, {
+        complete,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteCompleted = async () => {
+    try {
+      await axios.delete("/api/todo/complete/todos");
+      const { data } = await axios.get("/api/todo");
+      if (data.length === 0) {
+        console.log("No todo");
+      } else {
+        setResult([data]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
       <div
         style={{
-          height: "100%",
+          height: "80%",
           width: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           gap: "10px",
           marginTop: "20px",
+          overflowY: "scroll",
+          paddingBottom: "120px",
         }}
       >
         <div>
@@ -89,7 +167,12 @@ const List = ({ input }) => {
           </button>
         </div>
         <div
-          style={{ border: "1px solid #ccc", padding: "10px" }}
+          style={{
+            border: "1px solid #ccc",
+            padding: "10px",
+            overflowY: "scroll",
+            height: "50%",
+          }}
           className="w-auto md:w-72"
         >
           <ol
@@ -99,12 +182,12 @@ const List = ({ input }) => {
               width: "100%",
             }}
           >
-            {input.length === 0 ? (
+            {result.length === 0 ? (
               <div>
                 <span>No todos found!</span>
               </div>
             ) : (
-              input.map((todo) => (
+              result[0].todos?.map((todo) => (
                 <div
                   style={{
                     borderBottom: "1px solid #ccc",
@@ -116,7 +199,6 @@ const List = ({ input }) => {
                   }}
                   key={todo._id}
                 >
-                  {/* {console.log(todo)} */}
                   <li style={{ padding: "2px" }}>{todo.description}</li>
                   <div className="flex items-center md:gap-2">
                     <input
@@ -124,15 +206,10 @@ const List = ({ input }) => {
                       type="checkbox"
                       name="done"
                       id="done"
-                      value={todo.completed}
+                      value={complete}
                       onChange={() => {
-                        const updatedTodos = todos.map((t) => {
-                          if (t._id === todo._id) {
-                            return { ...t, completed: !t.completed };
-                          }
-                          return t;
-                        });
-                        setTodos(updatedTodos);
+                        handleComplete(todo._id);
+                        setComplete(!complete);
                       }}
                       className="ml-9 md:ml-0"
                     />
@@ -201,14 +278,7 @@ const List = ({ input }) => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  const updatedTodos = todos.map((todo) => {
-                    if (todo.id === todo.id) {
-                      return { ...todo, data: up };
-                    }
-                    return todo;
-                  });
-                  setTodos(updatedTodos);
-                  setUpdate(!update);
+                  handleUpdateSub(td);
                 }}
               >
                 Update
@@ -230,7 +300,7 @@ const List = ({ input }) => {
               borderRadius: "2px",
               cursor: "pointer",
             }}
-            onClick={handleRemoveAll}
+            onClick={() => handleRemoveAll()}
           >
             Delete All
           </button>

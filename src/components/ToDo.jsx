@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import List from "./List";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -7,31 +7,43 @@ const ToDo = () => {
   const [input, setInput] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
-  const [res, setRes] = useState([])
+  const [res, setRes] = useState([]);
+  const [result, setResult] = useState([]);
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (input === "") {
       setErr("Please enter a todo!");
     } else {
       try {
         setLoading(true);
-        const {data} = await axios.post("/api/todo", { title: "Todo"+ Date.now(), description: input });
-        setRes([...res, data])
-        setInput('')
+        await axios.post("/api/todo", {
+          title: "Todo" + Date.now(),
+          description: input,
+        });
+        const { data } = await axios.get("/api/todo");
+        if (data.length === 0) {
+          console.log("No todo");
+        } else {
+          setRes([data]);
+          // setRes([...res, data]);
+        }
+        setInput("");
       } catch (error) {
-        console.log(error)
-        toast({ type: "error", message: error.message});
+        console.log(error);
+       toast.error(error);
       }
     }
   };
+
+  
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        height: "100vh",
+        height: "100%",
         justifyContent: "center",
         alignItems: "center",
       }}
