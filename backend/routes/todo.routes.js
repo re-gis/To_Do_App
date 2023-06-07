@@ -5,13 +5,19 @@ const {
   getOneTodo,
   updateTodo,
   deleteTodo,
-} = require("../controllers/todo.controller.js");
+  deleteAll,
+  updateTodoComplete,
+  deleteComplete,
+} = require("../controllers/todo.controller");
 const router = express.Router();
 
 router.post("/", createTodo);
 router.get("/", getTodos);
-// router.get("/:id", getOneTodo);
-// router.put("/:id", updateTodo);
-router.delete('/delete/:id/one', deleteTodo);
+router.get("/:id", getOneTodo);
+router.put("/:id", updateTodo);
+router.put("/:id/complete", updateTodoComplete);
+router.delete('/:id', deleteTodo);
+router.delete('/', deleteAll)
+router.delete('/complete/todos', deleteComplete)
 
 module.exports = router;
