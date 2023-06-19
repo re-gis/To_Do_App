@@ -11,10 +11,10 @@ const List = ({ input }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
   const [complete, setComplete] = useState(true);
-  const [td, setTd] = useState()
+  const [td, setTd] = useState();
 
-  const u = localStorage.getItem('userInfo')
-  const user = JSON.parse(u)
+  const u = localStorage.getItem("userInfo");
+  const user = JSON.parse(u);
 
   const getTodos = async () => {
     try {
@@ -33,8 +33,12 @@ const List = ({ input }) => {
 
   const handleRemove = async (todo) => {
     try {
-      await axios.delete(`/api/todo/${todo}`);
-      const { data } = await axios.get("/api/todo");
+      await axios.delete(`/api/todo/${todo}`, {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      });
+      const { data } = await axios.get(`/api/todo/${user.id}`);
       if (data.length === 0) {
         console.log("No todo");
       } else {
@@ -45,11 +49,15 @@ const List = ({ input }) => {
       toast.error("An error occurred!");
     }
   };
-  
+
   const handleRemoveAll = async () => {
     try {
-      await axios.delete("/api/todo");
-      const { data } = await axios.get("/api/todo");
+      await axios.delete("/api/todo", {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      });
+      const { data } = await axios.get(`/api/todo/${user.id}`);
       if (data.length === 0) {
         console.log("No todo");
       } else {
@@ -60,35 +68,54 @@ const List = ({ input }) => {
     }
   };
   const handleUpdate = (todo) => {
-    setTd(todo)
+    setTd(todo);
     setUpdate(!update);
   };
 
-
-  const handleUpdateSub = async(todo) => {
+  const handleUpdateSub = async (todo) => {
     try {
-      await axios.put(`/api/todo/${todo}`, {
-        desc: up
-      })     
-      const { data } = await axios.get("/api/todo");
+      await axios.put(
+        `/api/todo/${todo}`,
+        {
+          desc: up,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      const { data } = await axios.get(`/api/todo/${user.id}`, {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      });
       if (data.length === 0) {
         console.log("No todo");
       } else {
         setResult([data]);
       }
-      
-      setUpdate(false)
-      setUp('')
+
+      setUpdate(false);
+      setUp("");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleComplete = async (todo) => {
     try {
-      const { data } = await axios.put(`/api/todo/${todo}/complete`, {
-        complete,
-      });
+      const { data } = await axios.put(
+        `/api/todo/${todo}/complete`,
+        {
+          complete,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
     } catch (error) {
       console.log(error);
     }
@@ -96,8 +123,12 @@ const List = ({ input }) => {
 
   const deleteCompleted = async () => {
     try {
-      await axios.delete("/api/todo/complete/todos");
-      const { data } = await axios.get("/api/todo");
+      await axios.delete("/api/todo/complete/todos", {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      });
+      const { data } = await axios.get(`/api/todo/${user.id}`);
       if (data.length === 0) {
         console.log("No todo");
       } else {

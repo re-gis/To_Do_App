@@ -9,15 +9,16 @@ const {
   updateTodoComplete,
   deleteComplete,
 } = require("../controllers/todo.controller");
+const { protect } = require("../middlewares/auth");
 const router = express.Router();
 
 router.post("/", createTodo);
 router.get("/:user", getTodos);
 router.get("/:id", getOneTodo);
-router.put("/:id", updateTodo);
-router.put("/:id/complete", updateTodoComplete);
-router.delete('/:id', deleteTodo);
-router.delete('/', deleteAll)
-router.delete('/complete/todos', deleteComplete)
+router.put("/:id", protect, updateTodo);
+router.put("/:id/complete", protect, updateTodoComplete);
+router.delete("/:id", protect, deleteTodo);
+router.delete("/", protect, deleteAll);
+router.delete("/complete/todos", protect, deleteComplete);
 
 module.exports = router;

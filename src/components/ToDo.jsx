@@ -24,7 +24,7 @@ const ToDo = () => {
           description: input,
           user: user.id,
         });
-        const { data } = await axios.get("/api/todo");
+        const { data } = await axios.get(`/api/todo/${user.id}`);
         if (data.length === 0) {
           console.log("No todo");
         } else {
