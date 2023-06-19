@@ -5,6 +5,7 @@ const router = require("./routes/todo.routes.js");
 require("dotenv").config();
 const app = express();
 const cors = require("cors");
+const userRouter = require("./routes/user.routes");
 
 // CORS
 app.use(
@@ -21,8 +22,12 @@ app.use(bodyParser.json());
 // DATABASE
 connectDB();
 
-// ROUTES
+/* TODO ROUTES */
 app.use("/api/todo", router);
+
+
+/* USER ROUTES */
+app.use('/api/users', userRouter)
 
 
 app.listen(PORT, () => {

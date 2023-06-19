@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ToDo from "./components/ToDo";
-import Update from "./components/Update";
 import axios from "axios";
+import SignupPage from "./Pages/SignupPage";
+import LoginPage from "./Pages/LoginPage";
+import Dashboard from "./Pages/Dashboard";
 
 
 
@@ -15,8 +17,10 @@ function App() {
       <div>
         <BrowserRouter>
           <Routes>
-            <Route path="*" element={<ToDo />} />
-            <Route path="/update" element={<Update />} exact />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/todo" element={<ToDo />} />
+            <Route path="/login"element={<LoginPage />} />
+            <Route path="/signup"element={<SignupPage />} />
           </Routes>
         </BrowserRouter>
       </div>

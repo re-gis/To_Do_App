@@ -9,6 +9,8 @@ const ToDo = () => {
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState([]);
   const [result, setResult] = useState([]);
+  const u = localStorage.getItem("userInfo");
+  const user = JSON.parse(u)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,23 +22,22 @@ const ToDo = () => {
         await axios.post("/api/todo", {
           title: "Todo" + Date.now(),
           description: input,
+          user: user.id,
         });
         const { data } = await axios.get("/api/todo");
         if (data.length === 0) {
           console.log("No todo");
         } else {
           setRes([data]);
-          // setRes([...res, data]);
         }
         setInput("");
       } catch (error) {
-        console.log(error);
-       toast.error(error);
+        console.log(error)
+        toast.error(error);
       }
     }
   };
 
-  
   return (
     <div
       style={{

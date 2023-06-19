@@ -13,9 +13,12 @@ const List = ({ input }) => {
   const [complete, setComplete] = useState(true);
   const [td, setTd] = useState()
 
+  const u = localStorage.getItem('userInfo')
+  const user = JSON.parse(u)
+
   const getTodos = async () => {
     try {
-      const { data } = await axios.get("/api/todo");
+      const { data } = await axios.get(`/api/todo/${user.id}`);
       if (data.length === 0) return;
       setResult([data]);
     } catch (error) {
@@ -42,6 +45,7 @@ const List = ({ input }) => {
       toast.error("An error occurred!");
     }
   };
+  
   const handleRemoveAll = async () => {
     try {
       await axios.delete("/api/todo");

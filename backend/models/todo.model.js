@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const model = mongoose.Schema;
+const { User } = require("../models/user.model");
 
-const Todo = new Schema(
+const Todo = new model(
   {
     title: {
       type: String,
@@ -11,6 +12,10 @@ const Todo = new Schema(
     completed: {
       type: Boolean,
       default: false,
+    },
+    user: {
+      type: String,
+      required: true,
     },
   },
   {

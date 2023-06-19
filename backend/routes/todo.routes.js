@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 
 router.post("/", createTodo);
-router.get("/", getTodos);
+router.get("/:user", getTodos);
 router.get("/:id", getOneTodo);
 router.put("/:id", updateTodo);
 router.put("/:id/complete", updateTodoComplete);
